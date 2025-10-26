@@ -51,6 +51,7 @@ class WasRun(TestCase):
     self.log += "testMethod "
 
   def testBrokenMethod(self):
+    self.log += "testBrokenMethod "
     raise Exception
 
   def tearDown(self):
@@ -87,6 +88,11 @@ class TestCaseTest(TestCase):
     suite.run(self.result)
     assert self.result.summary() == "2 run, 1 failed"
 
+  def testTearDownOnBrokenMethod(self):
+    test = WasRun("testBrokenMethod")
+    test.run(self.result)
+    assert test.log == "setUp testBrokenMethod tearDown "
+
 if __name__ == "__main__":
   suite = TestSuite()
   suite.add(TestCaseTest("testTemplateMethod"))
@@ -94,6 +100,7 @@ if __name__ == "__main__":
   suite.add(TestCaseTest("testFailedResult"))
   suite.add(TestCaseTest("testFailedResultFormatting"))
   suite.add(TestCaseTest("testSuite"))
+  suite.add(TestCaseTest("testTearDownOnBrokenMethod"))
   result = TestResult()
   suite.run(result)
   print(result.summary())
