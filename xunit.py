@@ -12,6 +12,10 @@ class TestResult:
   def summary(self):
     return f"{self.runCount} run, {self.errorCount} failed"
 
+class BrokenTestResult(TestResult):
+  def testFailed(self):
+    raise Exception
+
 class TestCase:
   def __init__(self, name):
     self.name = name
@@ -93,6 +97,14 @@ class TestCaseTest(TestCase):
     test.run(self.result)
     assert test.log == "setUp testBrokenMethod tearDown "
 
+  def testTearDownOnBrokenTestFailed(self):
+    self.result = BrokenTestResult()
+    test = WasRun("testBrokenMethod")
+    try:
+      test.run(self.result)
+    except Exception:
+      assert test.log == "setUp testBrokenMethod tearDown "
+
 if __name__ == "__main__":
   suite = TestSuite()
   suite.add(TestCaseTest("testTemplateMethod"))
@@ -101,6 +113,7 @@ if __name__ == "__main__":
   suite.add(TestCaseTest("testFailedResultFormatting"))
   suite.add(TestCaseTest("testSuite"))
   suite.add(TestCaseTest("testTearDownOnBrokenMethod"))
+  suite.add(TestCaseTest("testTearDownOnBrokenTestFailed"))
   result = TestResult()
   suite.run(result)
   print(result.summary())
