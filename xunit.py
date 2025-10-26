@@ -34,7 +34,8 @@ class TestCase:
       method()
     except Exception:
       result.testFailed()
-    self.tearDown()
+    finally:
+      self.tearDown()
 
 class TestSuite:
   def __init__(self):
