@@ -2,15 +2,19 @@ class TestResult:
   def __init__(self):
     self.runCount = 0
     self.errorCount = 0
+    self.errors = []
 
   def testStarted(self):
     self.runCount += 1
 
-  def testFailed(self):
+  def testFailed(self, errors=None):
     self.errorCount += 1
 
+    if errors:
+      self.errors.append(errors)
+
   def summary(self):
-    return f"{self.runCount} run, {self.errorCount} failed"
+    return f"{self.runCount} run, {self.errorCount} failed" + (f"\nErrors: {','.join(self.errors)}" if self.errors else "")
 
 class BrokenTestResult(TestResult):
   def testFailed(self):
@@ -28,7 +32,12 @@ class TestCase:
 
   def run(self, result):
     result.testStarted()
-    self.setUp()
+    try:
+      self.setUp()
+    except Exception as e:
+      result.testFailed(errors=f"setUp({e.__class__.__name__})")
+      return
+
     try:
       method = getattr(self, self.name)
       method()
