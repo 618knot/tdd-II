@@ -125,6 +125,12 @@ class TestCaseTest(TestCase):
     test.run(self.result)
     assert self.result.summary() == "1 run, 1 failed\nErrors: WasRunSetUpBroken.setUp -- Exception"
 
+  def testSuiteFromTestCase(self):
+    suite = TestSuite.fromTestCase(WasRun)
+    result = TestResult()
+    suite.run(result)
+    assert result.summary() == "2 run, 1 failed\nErrors: WasRun.testBrokenMethod -- Exception"
+
 if __name__ == "__main__":
   suite = TestSuite()
   suite.add(TestCaseTest("testTemplateMethod"))
@@ -135,6 +141,7 @@ if __name__ == "__main__":
   suite.add(TestCaseTest("testTearDownOnBrokenMethod"))
   suite.add(TestCaseTest("testTearDownOnBrokenTestFailed"))
   suite.add(TestCaseTest("testTearDownOnBrokenSetUp"))
+  suite.add(TestCaseTest("testSuiteFromTestCase"))
   result = TestResult()
   suite.run(result)
   print(result.summary())
