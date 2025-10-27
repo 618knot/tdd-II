@@ -140,16 +140,7 @@ class TestCaseTest(TestCase):
     assert result.summary() == "2 run, 1 failed\nErrors: WasRun.testBrokenMethod -- Exception"
 
 if __name__ == "__main__":
-  suite = TestSuite()
-  suite.add(TestCaseTest("testTemplateMethod"))
-  suite.add(TestCaseTest("testResult"))
-  suite.add(TestCaseTest("testFailedResult"))
-  suite.add(TestCaseTest("testFailedResultFormatting"))
-  suite.add(TestCaseTest("testSuite"))
-  suite.add(TestCaseTest("testTearDownOnBrokenMethod"))
-  suite.add(TestCaseTest("testTearDownOnBrokenTestFailed"))
-  suite.add(TestCaseTest("testTearDownOnBrokenSetUp"))
-  suite.add(TestCaseTest("testSuiteFromTestCase"))
+  suite = TestSuite.fromTestCase(TestCaseTest)
   result = TestResult()
   suite.run(result)
   print(result.summary())
