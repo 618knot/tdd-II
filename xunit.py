@@ -35,7 +35,7 @@ class TestCase:
     try:
       self.setUp()
     except Exception as e:
-      result.testFailed(errors=f"setUp({e.__class__.__name__})")
+      result.testFailed(errors=f"{self.__class__.__name__}.setUp -- {e.__class__.__name__}")
       return
 
     try:
@@ -123,7 +123,7 @@ class TestCaseTest(TestCase):
   def testTearDownOnBrokenSetUp(self):
     test = WasRunSetUpBroken("testMethod")
     test.run(self.result)
-    assert self.result.summary() == "1 run, 1 failed\nErrors: setUp(Exception)"
+    assert self.result.summary() == "1 run, 1 failed\nErrors: WasRunSetUpBroken.setUp -- Exception"
 
 if __name__ == "__main__":
   suite = TestSuite()
