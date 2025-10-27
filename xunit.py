@@ -41,8 +41,8 @@ class TestCase:
     try:
       method = getattr(self, self.name)
       method()
-    except Exception:
-      result.testFailed()
+    except Exception as e:
+      result.testFailed(errors=f"{self.__class__.__name__}.{self.name} -- {e.__class__.__name__}")
     finally:
       self.tearDown()
 
@@ -93,7 +93,7 @@ class TestCaseTest(TestCase):
   def testFailedResult(self):
     test = WasRun("testBrokenMethod")
     test.run(self.result)
-    assert self.result.summary() == "1 run, 1 failed"
+    assert self.result.summary() == "1 run, 1 failed\nErrors: WasRun.testBrokenMethod -- Exception"
 
   def testFailedResultFormatting(self):
     self.result.testStarted()
@@ -105,7 +105,7 @@ class TestCaseTest(TestCase):
     suite.add(WasRun("testMethod"))
     suite.add(WasRun("testBrokenMethod"))
     suite.run(self.result)
-    assert self.result.summary() == "2 run, 1 failed"
+    assert self.result.summary() == "2 run, 1 failed\nErrors: WasRun.testBrokenMethod -- Exception"
 
   def testTearDownOnBrokenMethod(self):
     test = WasRun("testBrokenMethod")
