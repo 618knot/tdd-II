@@ -57,6 +57,14 @@ class TestSuite:
     for test in self.tests:
       test.run(result)
 
+  @classmethod
+  def fromTestCase(cls, testCase):
+    suite = cls()
+    for method in dir(testCase):
+      if method.startswith("test"):
+        suite.add(testCase(method))
+    return suite
+
 class WasRun(TestCase):
   def setUp(self):
     self.log = "setUp "
